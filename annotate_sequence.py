@@ -52,6 +52,8 @@ def get_sequence(fasta, chromosome, position, alt_allele):
             Extrat sequence surrounding the SNP.
     """
     region = str(int(position) - 200)
+    if "chr" in chromosome:
+        chromosome = chromosome.split('chr')[1]
     length = "401"
     command= """bioawk -c fastx '{{ if("{0}" == $name){{ print substr($seq,{1}, {2})}}}}' {3}""".format(chromosome, region, length, fasta)
     try:
