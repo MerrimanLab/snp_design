@@ -84,10 +84,10 @@ def annotate_nearby(all_vcf, position_snp, sequence):
             alt = l_s[4]
             # TODO check this is consistent with the results in the 1-indexed and 0-indexed lists.
             #print vcf_position
-            print position_snp
+            print(position_snp)
             position =  int(vcf_position)  - (int(position_snp) - 200)
             #print sequence[position]
-            print ref, alt
+            print(ref, alt)
             if len(ref) > 1 or len(alt) > 1:
                 alt_s = alt.split(',')
                 alt_s = [len(o) for o in alt]
@@ -100,11 +100,11 @@ def annotate_nearby(all_vcf, position_snp, sequence):
                     for i in range(length_alt_s, length_alt_s + dist):
                         sequence[position + i] = 'N' 
                 else:
-                    print 'wow'
+                    print('wow')
             else:
                 change_snp = change_table(ref, alt)
-                print change_snp
-                print sequence[position]
+                print(change_snp)
+                print(sequence[position])
                 if position == 200:
                     continue
                 sequence[position] =  change_snp
