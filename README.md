@@ -7,18 +7,29 @@
  - To install the package unzip the file (put it somewhere save eg. home/Executables) and cd into it (in Terminal)
  - In Terminal type:
 
+```
         python2.7 setup.py install --user
+```
+
  - Check that python is also in your bash PATH
     - In Terminal type:
 
+```
         nano ~/.bashrc
+```
+
     - In the window that opens check there is a line that says:
 
+```
         export PATH=$PATH:/Users/[yourhomefolder]/Library/Python/2.7/bin
+```
+
     - Save any edits you make in this window then type:
 
+```
         ln -s ~/.bashrc ~/.bash_profile
         source ~/.bashrc
+```
 
  - Now this script is set up as a command line program for you to use!
 
@@ -32,37 +43,40 @@
 
  - Command arguments:
     - Required arguments:
-
-       \-v, --vcf VCF_FILE
+```
+        -v, --vcf VCF_FILE
                         a bgzipped VCF file (extension .vcf.gz), this file
                         also requires an index file (extension .vcf.gz.tbi)
-       \-f, --fasta FASTA
+        -f, --fasta FASTA
                         Fasta file
-       \-c, --chr CHROMOSOME
+        -c, --chr CHROMOSOME
                         Chromosome to extract region from; check whether your
                         vcf uses 'chr1' or '1' formatting
-       \-p, --pos POSITION_SNP
+        -p, --pos POSITION_SNP
                         Position of the SNP 
-       \-a, --alt ALTERNATE_ALLELE
+        -a, --alt ALTERNATE_ALLELE
                         What the alternate allele is
+```
 
     - Optional arguments:
 
-       \-m, --mask MASK_CHARACTER
+```
+        -m, --mask MASK_CHARACTER
                         Do you want nearby SNPs labelled with iupac codes or
                         Ns?, Default = 'iupac', Alternate = 'N'
-       \-s, --size SIZE_REGION
+        -s, --size SIZE_REGION
                         How much sequence either side of you SNP do you want?
                         Default = 200
-       \-o, --output OUTPUT_FILE
+        -o, --output OUTPUT_FILE
                         What do you want to call the output file name? Default
                         = chr.pos
+```
 
  - Example Usage and Output:
 
+```
 annotate_sequence --vcf polyReSeq.vcf.gz --fasta human_build37.fasta --chr chr11 --pos 64323183 --alt T --size 300 --output 11_64323183_poly
 
-```
 + - - - - - - - - - - - - - - - - - - - - +
            annotate_sequence-v2.0          
 + - - - - - - - - - - - - - - - - - - - - +
