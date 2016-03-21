@@ -18,6 +18,8 @@ iupac = {
     "A_T": "W", "T_A": "W"
     }
 
+snp_dictionary = {}
+
 def check_system(command):
     return subprocess.call("type " + command, shell = True, stdout = subprocess.PIPE, stderr = subprocess.PIPE) == 0
 
@@ -40,7 +42,7 @@ def extract_snps(vcf_file, chromosome, position_snp, size_region):
     except subprocess.CalledProcessError:
         sys.stderr.write("\nError: Could not run bcftools\n")
         sys.exit(1)
-    with open(chromosome + "_" + position_snp + ".vcf", "wb") as f:
+    with open(chromosome + "_" + position_snp + ".vcf", "w") as f:
         f.write(output)
     return output
     
@@ -72,12 +74,11 @@ def change_table(ref, alt, mask_character):
         return "N"
 
 
-def annotate_nearby(subset_vcf, position_snp, sequence, mask_character):
+def annotate_nearby(subset_vcf, position_snp, sequence, mask_character, size_region):
     """
         Annotate the nearby SNPs and indels
     """
     sequence = list(sequence)
-#    snp_dictionary = {}
     for line in subset_vcf.split("\n"):
         if "#" not in line:
             if line == "":
@@ -87,7 +88,7 @@ def annotate_nearby(subset_vcf, position_snp, sequence, mask_character):
             ref = line_split[3]
             alt = line_split[4]
             position = int(vcf_position) - (int(position_snp) - int(size_region))
-#            snp_dictionary[int(vcf_position)] = [ref, alt]
+            snp_dictionary[int(vcf_position)] = [ref, alt]
             if len(ref) > 1 or len(alt) > 1:
                 alt_s = alt.split(",")
                 alt_s = [len(o) for o in alt]
@@ -99,33 +100,31 @@ def annotate_nearby(subset_vcf, position_snp, sequence, mask_character):
                 if dist > 0:
                     for i in range(length_alt_s, length_alt_s + dist):
                         sequence[position + i] = "N" 
-                else:
-                    print("wow")
+#                else:
+#                    print("wow")
             else:
                 change_snp = change_table(ref, alt, mask_character)
-                print(change_snp)
-                print(sequence[position])
+#                print(change_snp)
+#                print(sequence[position])
                 if position == size_region:
                     continue
                 sequence[position] = change_snp
 
     return "".join(sequence)
-#    return snp_dictionary
+
 
 def finalise_design(output, alt_allele, size_region):
     output = output[0:int(size_region)] + "[" + output[int(size_region)] + "/" + alt_allele + "]" + output[int(size_region)+1:]
     return output
 
 def write_files(vcf_file, fasta, chromosome, position_snp, alternate_allele,
-                mask_character, size_region, output_file, sequence,
-                #snp_dictionary
-                ):
+                mask_character, size_region, output_file, sequence):
     """
         Write out the result files
     """
     run_date_time = datetime.datetime.strftime(datetime.datetime.now(), '%d/%m/%y %H:%M:%S')
     region = get_region(position_snp, size_region)
-#    snps_found = len(snp_dictionary)
+    snps_found = len(snp_dictionary)
     """
         Write a log file of the arguments and outputs of this script
     """
@@ -148,11 +147,12 @@ def write_files(vcf_file, fasta, chromosome, position_snp, alternate_allele,
         f.write("The region within " + chromosome + ":" + region + " was extracted from the " + vcf_file + "file.\n" + 
                 "   A new file called " + chromosome + ":" + position_snp + ".vcf was created.\n")
         f.write("\n")
-#        f.write(str(snps_found) + " SNPs/variants were found within the extracted region.\n")
-#        for snp,alleles in snp_dictionary.items():
-#            print("\n" + chromosome + ":" + snp + "\n")
-#            print("    [" + alleles[0] + "/" + alleles[1] + "]\n")
+        f.write(str(snps_found) + " SNPs/variants were found within the extracted region.\n")
+        for snp,alleles in snp_dictionary.items():
+            f.write("\n" + str(chromosome) + ":" + str(snp) + ";")
+            f.write(" [" + alleles[0] + "/" + alleles[1] + "]\n")
         f.write("\n")
+        f.write("+ - - - - - - - - - - - - - - - - - - - - +\n\n")
         f.write("Sequence Output:\n")
         f.write("\n")
         f.write("> " + chromosome + ":" + position_snp +"\n")
@@ -173,7 +173,7 @@ def main():
             Annotate the sequence with SNPs from a vcf file - ready for custom TaqMan design / GeneWorks.
     """
     parser = argparse.ArgumentParser(description = "Annotate a sequence with SNPs from a vcf file - ready for custom TaqMan design / GeneWorks.")
-    parser.add_argument("-v", "--vcf", dest = "vcf_file", help = "VCF file", required = True)
+    parser.add_argument("-v", "--vcf", dest = "vcf_file", help = "a bgzipped VCF file", required = True)
     parser.add_argument("-f", "--fasta", dest = "fasta", help = "Fasta file", required = True)
     parser.add_argument("-c", "--chr", dest = "chromosome", help = "Chromosome to extract from", required = True)
     parser.add_argument("-p", "--pos", dest = "position_snp", help = "Position of the SNP", required = True)
@@ -187,7 +187,8 @@ def main():
         args.output_file = chromosome + "." + position_snp
     if args.size_region == None:
         args.size_region = 200
-    print("+ - - - - - - - - - - - - - - - - - - - - +\n" + 
+    print("\n" + 
+          "+ - - - - - - - - - - - - - - - - - - - - +\n" + 
           "           annotate_sequence-v2.0          \n" + 
           "+ - - - - - - - - - - - - - - - - - - - - +\n")
     print("Script run on: " + run_date_time + "\n")
@@ -208,19 +209,19 @@ def main():
     assert exists_bioawk == True, "\nError: Could not run bioawk, please install bioawk or add it to your PATH.\n"
     subset_vcf = extract_snps(args.vcf_file, args.chromosome, args.position_snp, args.size_region)
     sequence = get_sequence(args.fasta, args.chromosome, args.position_snp, args.alternate_allele, args.size_region)
-    sequence = annotate_nearby(subset_vcf, args.position_snp, sequence, args.mask_character)
-#    snp_dictionary = annotate_nearby(subset_vcf, args.position_snp, sequence, args.mask_character)
+    sequence = annotate_nearby(subset_vcf, args.position_snp, sequence, args.mask_character, args.size_region)
+    print("\n" + str(len(snp_dictionary)) + " SNPs/variants were found within the extracted region.\n")
+    for snp,alleles in snp_dictionary.items():
+        print("\n" + str(args.chromosome) + ":" + str(snp) + ";" + " [" + str(alleles[0]) + "/" + str(alleles[1]) + "]")
     sequence = finalise_design(sequence, args.alternate_allele, args.size_region)
     write_files(args.vcf_file, args.fasta, args.chromosome, args.position_snp, args.alternate_allele,
-                args.mask_character, args.size_region, args.output_file, sequence,
-                # snp_dictionary
-                 )
+                args.mask_character, args.size_region, args.output_file, sequence)
     print("\nannotate_sequence-v2.0 was successfully run.\n" + 
-    	  "    A file called " + str(args.output_file) + ".fasta was created.\n" + 
-    	  "    A log file called " + str(args.output_file) + ".log was also created.\n" + 
-    	  "\n" + 
-    	  "+ - - - - - - - - - - - - - - - - - - - - +\n")
-    	  
+          "    A file called " + str(args.output_file) + ".fasta was created.\n" + 
+          "    A log file called " + str(args.output_file) + ".log was also created.\n" + 
+          "\n" + 
+          "+ - - - - - - - - - - - - - - - - - - - - +\n")
+          
 
 if __name__=="__main__":
     main()
