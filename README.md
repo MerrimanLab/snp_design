@@ -17,13 +17,11 @@
 ```
         nano ~/.bashrc
 ```
-
     - In the window that opens check there is a line that says:
 
 ```
         export PATH=$PATH:/Users/[yourhomefolder]/Library/Python/2.7/bin
 ```
-
     - Save any edits you make in this window then type:
 
 ```
@@ -57,7 +55,6 @@
         -a, --alt ALTERNATE_ALLELE
                         What the alternate allele is
 ```
-
     - Optional arguments:
 
 ```
