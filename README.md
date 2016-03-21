@@ -17,6 +17,7 @@
 ```
         nano ~/.bashrc
 ```
+
     - In the window that opens check there is a line that says:
 
 ```
