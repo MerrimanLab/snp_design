@@ -12,18 +12,20 @@
 ```
 
  - Check that python is also in your bash PATH
-    - In Terminal type:
+ - In Terminal type:
 
 ```
         nano ~/.bashrc
 ```
 
-    - In the window that opens check there is a line that says:
+ - In the window that opens check there is a line that says:
+
 
 ```
         export PATH=$PATH:/Users/[yourhomefolder]/Library/Python/2.7/bin
 ```
-    - Save any edits you make in this window then type:
+
+ - Save any edits you make in this window then type:
 
 ```
         ln -s ~/.bashrc ~/.bash_profile
@@ -34,14 +36,17 @@
 
 ## To run this script:
 
- - You will need:
-    - A .vcf.gz file to extract SNPs/variants of interest from and the corresponding index file (.vcf.gz.tbi) 
-    - A .fasta file of the same genome build your vcf uses to specify SNP/variant positions
-    - The chromosome and position of your SNP of interest
-    - The base corresponding to the alternate allele
+### You will need:
 
- - Command arguments:
-    - Required arguments:
+ - A .vcf.gz file to extract SNPs/variants of interest from and the corresponding index file (.vcf.gz.tbi) 
+ - A .fasta file of the same genome build your vcf uses to specify SNP/variant positions
+ - The chromosome and position of your SNP of interest
+ - The base corresponding to the alternate allele
+
+### Command Arguments:
+
+ - Required arguments:
+
 ```
         -v, --vcf VCF_FILE
                         a bgzipped VCF file (extension .vcf.gz), this file
@@ -56,7 +61,8 @@
         -a, --alt ALTERNATE_ALLELE
                         What the alternate allele is
 ```
-    - Optional arguments:
+
+ - Optional arguments:
 
 ```
         -m, --mask MASK_CHARACTER
@@ -70,7 +76,7 @@
                         = chr.pos
 ```
 
- - Example Usage and Output:
+### Example Usage and Output:
 
 ```
 annotate_sequence --vcf polyReSeq.vcf.gz --fasta human_build37.fasta --chr chr11 --pos 64323183 --alt T --size 300 --output 11_64323183_poly
