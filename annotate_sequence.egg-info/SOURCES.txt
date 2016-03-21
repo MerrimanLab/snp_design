@@ -1,0 +1,9 @@
+setup.py
+annotate_sequence/__init__.py
+annotate_sequence/annotate_sequence.py
+annotate_sequence.egg-info/PKG-INFO
+annotate_sequence.egg-info/SOURCES.txt
+annotate_sequence.egg-info/dependency_links.txt
+annotate_sequence.egg-info/entry_points.txt
+annotate_sequence.egg-info/not-zip-safe
+annotate_sequence.egg-info/top_level.txt
