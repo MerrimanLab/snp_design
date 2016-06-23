@@ -49,7 +49,7 @@
 
  - A .vcf.gz file to extract SNPs/variants of interest from and the corresponding index file (.vcf.gz.tbi) 
  - A .fasta file of the same genome build your vcf uses to specify SNP/variant positions
-    - This .fasta file must have header specifying the chromosomse number >chromosome (eg. >1) 
+    - This .fasta file must have a header line specifying the chromosomse number >chromosome (eg. >1) 
  - The chromosome and position of your SNP of interest
  - The base corresponding to the alternate allele
  - You will also need bcftools (https://github.com/samtools/bcftools) and bioawk (https://github.com/lh3/bioawk) installed for this program to run.
