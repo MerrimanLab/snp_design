@@ -1,7 +1,9 @@
-# Annotate a sequence segment with SNPs/variants
-## This script is intended for use when designing custom TaqMan probes or Sequenom / GeneWorks assays.
+[![DOI](https://zenodo.org/badge/22874/MerrimanLab/snp_design.svg)](https://zenodo.org/badge/latestdoi/22874/MerrimanLab/snp_design)
 
-## To install this script package:
+## Annotate a sequence segment with SNPs/variants
+### This script is intended for use when designing custom TaqMan probes or Sequenom / GeneWorks assays.
+
+### To install this script package:
 
  - Download a .zip file of this repository
  - To install the package unzip the file (put it somewhere save eg. home/Executables) and cd into it (in Terminal)
@@ -32,18 +34,27 @@
         source ~/.bashrc
 ```
 
+ - If you are using mac OS you may also want to link your .bashrc and .bash_profile
+
+```
+        ln -s ~/.bashrc ~/.bash_profile
+```
+
  - Now this script is set up as a command line program for you to use!
 
-## To run this script:
 
-### You will need:
+### To run this script:
+
+#### You will need:
 
  - A .vcf.gz file to extract SNPs/variants of interest from and the corresponding index file (.vcf.gz.tbi) 
  - A .fasta file of the same genome build your vcf uses to specify SNP/variant positions
+    - This .fasta file must have header specifying the chromosomse number >chromosome (eg. >1) 
  - The chromosome and position of your SNP of interest
  - The base corresponding to the alternate allele
+ - You will also need bcftools (https://github.com/samtools/bcftools) and bioawk (https://github.com/lh3/bioawk) installed for this program to run.
 
-### Command Arguments:
+#### Command Arguments:
 
  - Required arguments:
 
@@ -76,7 +87,7 @@
                         = chr.pos
 ```
 
-### Example Usage and Output:
+#### Example Usage and Output:
 
 ```
 annotate_sequence --vcf polyReSeq.vcf.gz --fasta human_build37.fasta --chr chr11 --pos 64323183 --alt T --size 300 --output 11_64323183_poly
